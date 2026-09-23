@@ -45,6 +45,50 @@ Telegram-бот для хранения кулинарных рецептов, �
    python bot.py
    ```
 
+## Запуск как сервис systemd
+
+Чтобы бот запускался автоматически при старте сервера и перезапускался при падении, оформите его как systemd-сервис.
+
+1. Убедитесь, что проект развёрнут по постоянному пути (например `/opt/my-kitchen`) и виртуальное окружение `.venv` создано и содержит зависимости (см. шаг 2 выше), а `.env` заполнен.
+
+2. Создайте юнит-файл `/etc/systemd/system/my-kitchen-bot.service`:
+   ```ini
+   [Unit]
+   Description=my-kitchen Telegram bot
+   After=network-online.target
+   Wants=network-online.target
+
+   [Service]
+   Type=simple
+   User=agniya
+   WorkingDirectory=/opt/my-kitchen
+   EnvironmentFile=/opt/my-kitchen/.env
+   ExecStart=/opt/my-kitchen/.venv/bin/python /opt/my-kitchen/bot.py
+   Restart=on-failure
+   RestartSec=5
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+   Замените `User` и пути `WorkingDirectory`/`EnvironmentFile`/`ExecStart` на актуальные для вашего сервера.
+
+3. Примените и запустите сервис:
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now my-kitchen-bot
+   ```
+
+4. Проверить состояние и логи:
+   ```bash
+   sudo systemctl status my-kitchen-bot
+   journalctl -u my-kitchen-bot -f
+   ```
+
+5. После обновления кода — перезапустить сервис:
+   ```bash
+   sudo systemctl restart my-kitchen-bot
+   ```
+
 ## Структура проекта
 
 ```
