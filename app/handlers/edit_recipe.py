@@ -1,3 +1,4 @@
+from __future__ import annotations
 from html import escape
 
 from aiogram import F, Router
