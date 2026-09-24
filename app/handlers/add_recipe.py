@@ -18,7 +18,7 @@ def setup(storage: RecipeStorage) -> Router:
             await message.answer("Нечего отменять.")
             return
         await state.clear()
-        await message.answer("Добавление рецепта отменено.")
+        await message.answer("Действие отменено.")
 
     @router.message(Command("add"))
     async def cmd_add(message: Message, state: FSMContext):

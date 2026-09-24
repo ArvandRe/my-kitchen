@@ -55,6 +55,26 @@ class RecipeStorage:
             self._write(recipes)
             return recipe
 
+    async def update(
+        self,
+        recipe_id: int,
+        name: str,
+        category: str,
+        ingredients: list[str],
+        steps: list[str],
+    ) -> Optional[dict]:
+        async with self._lock:
+            recipes = self._read()
+            for recipe in recipes:
+                if recipe["id"] == recipe_id:
+                    recipe["name"] = name
+                    recipe["category"] = category
+                    recipe["ingredients"] = ingredients
+                    recipe["steps"] = steps
+                    self._write(recipes)
+                    return recipe
+            return None
+
     async def filter_by_ingredient(self, ingredient: str) -> list[dict]:
         recipes = await self.get_all()
         needle = ingredient.strip().lower()

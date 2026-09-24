@@ -9,7 +9,7 @@ from aiogram.types import BotCommand
 
 from app.commands import BOT_COMMANDS
 from app.config import ADMIN, BOT_TOKEN, DATA_FILE
-from app.handlers import add_recipe, list_recipes, start
+from app.handlers import add_recipe, edit_recipe, list_recipes, start
 from app.middlewares.access import AccessMiddleware
 from app.storage.json_storage import RecipeStorage
 
@@ -33,6 +33,7 @@ async def main() -> None:
 
     dp.include_router(start.router)
     dp.include_router(add_recipe.setup(recipe_storage))
+    dp.include_router(edit_recipe.setup(recipe_storage))
     dp.include_router(list_recipes.setup(recipe_storage))
 
     await bot.set_my_commands(
